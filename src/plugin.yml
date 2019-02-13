@@ -1,0 +1,10 @@
+name: NameTagHide
+main: com.ericlam.mc.nametaghide.NameTagHide
+version: 1.0.0
+author: Hydranapse_
+commands:
+  nth-reload:
+    description: reload command
+permissions:
+  nth.reload:
+    default: op
