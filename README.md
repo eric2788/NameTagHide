@@ -1,7 +1,7 @@
 # NameTagHide
 隱藏名字標籤，兼容 scoreboardstats
 
- [下載插件](http://corneey.com/wBlwpV)
+ [下載插件](http://corneey.com/wBzcsX)
  
  ## 如何與 scoreboardstats 兼容
  
