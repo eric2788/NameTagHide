@@ -1,7 +1,5 @@
 package com.ericlam.mc.nametaghide;
 
-import com.github.games647.scoreboardstats.ScoreboardStats;
-import com.github.games647.scoreboardstats.variables.VariableReplacer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -13,11 +11,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class NameTagHide extends JavaPlugin implements Listener, CommandExecutor {
     private List<String> worlds = new ArrayList<>();
@@ -76,6 +78,17 @@ public class NameTagHide extends JavaPlugin implements Listener, CommandExecutor
         if (!cache.containsKey(player.getUniqueId())) return;
         Scoreboard scoreboard = cache.get(player.getUniqueId());
         controlVisibility(scoreboard,world,player);
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent e) {
+        Player player = e.getPlayer();
+        World world = e.getRespawnLocation().getWorld();
+        if (!cache.containsKey(player.getUniqueId())) return;
+        Bukkit.getScheduler().runTask(this, () -> {
+            Scoreboard scoreboard = cache.get(player.getUniqueId());
+            controlVisibility(scoreboard, world, player);
+        });
     }
 
     private void controlVisibility(Scoreboard scoreboard,World world,Player player){
