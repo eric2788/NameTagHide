@@ -56,6 +56,14 @@ public class NameTagHide extends JavaPlugin implements Listener, CommandExecutor
         cache.put(uuid,scoreboard);
     }
 
+    private void restoreScoreboard(Player player) {
+        UUID uuid = player.getUniqueId();
+        Scoreboard scoreboard = player.getScoreboard();
+        if (!scoreboard.equals(cache.get(uuid))) {
+            player.setScoreboard(cache.get(uuid));
+        }
+    }
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e){
@@ -63,21 +71,25 @@ public class NameTagHide extends JavaPlugin implements Listener, CommandExecutor
            Player player = e.getPlayer();
            UUID uuid = player.getUniqueId();
            Scoreboard scoreboard = player.getScoreboard();
-           if (scoreboard==null) scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
            if (scoreboard==null) scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
            registerScoreboard(uuid,scoreboard);
-           if (!cache.containsKey(player.getUniqueId())) return;
-           controlVisibility(scoreboard,player.getWorld(),player);
+           if (cache.containsKey(player.getUniqueId())) {
+               controlVisibility(scoreboard, player.getWorld(), player);
+           }
        });
     }
 
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent e){
-        World world = e.getPlayer().getWorld();
         Player player = e.getPlayer();
         if (!cache.containsKey(player.getUniqueId())) return;
-        Scoreboard scoreboard = cache.get(player.getUniqueId());
-        controlVisibility(scoreboard,world,player);
+        restoreScoreboard(player);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            World world = e.getPlayer().getWorld();
+            Scoreboard scoreboard = cache.get(player.getUniqueId());
+            controlVisibility(scoreboard, world, player);
+        }, 60L);
+
     }
 
     @EventHandler
@@ -85,10 +97,11 @@ public class NameTagHide extends JavaPlugin implements Listener, CommandExecutor
         Player player = e.getPlayer();
         World world = e.getRespawnLocation().getWorld();
         if (!cache.containsKey(player.getUniqueId())) return;
-        Bukkit.getScheduler().runTask(this, () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            restoreScoreboard(player);
             Scoreboard scoreboard = cache.get(player.getUniqueId());
             controlVisibility(scoreboard, world, player);
-        });
+        }, 30L);
     }
 
     private void controlVisibility(Scoreboard scoreboard,World world,Player player){
