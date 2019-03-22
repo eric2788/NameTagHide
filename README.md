@@ -1,7 +1,7 @@
 # NameTagHide
 隱藏名字標籤，兼容 scoreboardstats
 
- [下載插件](http://corneey.com/wBzcsX)
+ [下載插件](http://corneey.com/wBzcsX) | [Mirror](http://www.mediafire.com/file/26u48v99a1hhrhj/NameTagHide.jar/file)
  
  ## 如何與 scoreboardstats 兼容
  
